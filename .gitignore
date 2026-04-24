@@ -20,3 +20,13 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+
+tests/__pycache__
+
+
+
+engine/roadmap/__pycache__/schemas.cpython-313.pyc
+engine/parsers/__pycache__/market_research.cpython-313.pyc
+.omc/state/hud-stdin-cache.json
+.omc/state/hud-state.json
+.env
