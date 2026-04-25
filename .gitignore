@@ -30,3 +30,4 @@ engine/parsers/__pycache__/market_research.cpython-313.pyc
 .omc/state/hud-stdin-cache.json
 .omc/state/hud-state.json
 .env
+node_modules
