@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap');
+
+:root {
+  /* Surfaces */
+  --bg-base: #0a0a0b;
+  --bg-panel: #111113;
+  --bg-elevated: #161618;
+  --bg-hover: #1c1c1f;
+
+  /* Borders */
+  --border-subtle: #222226;
+  --border-strong: #2e2e34;
+
+  /* Text */
+  --fg-primary: #ededee;
+  --fg-secondary: #a1a1aa;
+  --fg-muted: #6b6b73;
+
+  /* Accent */
+  --accent: #d4ff00;
+  --accent-dim: #d4ff0033;
+  --accent-text: #0a0a0b;
+
+  /* Agent colors */
+  --browser: #60a5fa;
+  --research: #c084fc;
+  --strategy: #fb923c;
+
+  /* Status */
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+
+  /* Type */
+  --font-display: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-serif: 'Fraunces', 'Georgia', serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg-base); color: var(--fg-primary); font-family: var(--font-body); }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--fg-muted); }
+
+/* Grain overlay */
+.grain::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* Animations */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+@keyframes blink-caret {
+  0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes spin-slow { to { transform: rotate(360deg); } }
+@keyframes progress-stripe {
+  0% { background-position: 0 0; }
+  100% { background-position: 32px 0; }
+}
