@@ -23,3 +23,10 @@ TestResults.xml
 .omc
 .env
 __init__.py
+.vite
+node_modules
+tests
+.claude
+.pytest_cache
+engine/roadmap/__pycache__/schemas.cpython-313.pyc
+engine/parsers/__pycache__/market_research.cpython-313.pyc
