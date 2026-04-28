@@ -30,3 +30,5 @@ tests
 .pytest_cache
 engine/roadmap/__pycache__/schemas.cpython-313.pyc
 engine/parsers/__pycache__/market_research.cpython-313.pyc
+engine/roadmap/__pycache__/generator.cpython-313.pyc
+engine/roadmap/__pycache__/gap_analysis.cpython-313.pyc
