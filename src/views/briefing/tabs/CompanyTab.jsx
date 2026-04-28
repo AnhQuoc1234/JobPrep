@@ -1,7 +1,7 @@
 import { Sparkles, TrendingUp } from "lucide-react";
-import PanelHeader from "../../../../interview-recon/src/components/PanelHeader";
-import KPI from "../../../../interview-recon/src/components/KPI";
-import { MOCK_CULTURE_KEYWORDS, MOCK_KPIS } from "../../../../interview-recon/src/data/mockData";
+import PanelHeader from "../../../components/PanelHeader";
+import KPI from "../../../components/KPI";
+import { MOCK_CULTURE_KEYWORDS, MOCK_KPIS } from "../../../data/mockData";
 
 // Company profile tab. Two side-by-side panels:
 // 1) Culture signals (keyword pills + summary)

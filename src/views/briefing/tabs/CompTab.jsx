@@ -1,5 +1,5 @@
 import { DollarSign } from "lucide-react";
-import PanelHeader from "../../../../interview-recon/src/components/PanelHeader";
+import PanelHeader from "../../../components/PanelHeader";
 
 // Compensation tab — single big panel with a P25/median/P75 range bar
 // scraped from Levels.fyi + Glassdoor.

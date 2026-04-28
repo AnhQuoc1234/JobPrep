@@ -1,5 +1,5 @@
 import { CheckCircle2, RotateCw } from "lucide-react";
-import StatusBadge from "../../interview-recon/src/components/StatusBadge";
+import StatusBadge from "./StatusBadge";
 
 // One of the three pipeline cards (Browser / Research / Strategy).
 // Shows a progress bar, sub-tasks ticking off, and a status pill.

@@ -3,7 +3,7 @@ import { ArrowRight, Zap } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import Field from "../components/Field";
 import ResumeDropzone from "../components/ResumeDropzone";
-import { inputStyle, primaryBtn, ghostBtn } from "../utils/styles";
+import { inputStyle, primaryBtn, ghostBtn } from "../utils/style";
 
 // 3-step onboarding wizard. State is local — on submit, POST `form`
 // to your /agents/run endpoint and call onComplete().

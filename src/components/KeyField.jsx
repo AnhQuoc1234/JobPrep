@@ -1,4 +1,4 @@
-import { inputStyle } from "../../interview-recon/src/utils/styles";
+import { inputStyle } from "../utils/style";
 
 // Password-style input for API keys. Shows a SET badge when populated.
 // In production, keys should be stored in localStorage (per spec: "never sent to a server").

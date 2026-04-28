@@ -1,5 +1,5 @@
 import { Copy } from "lucide-react";
-import { ghostBtn, starLabel } from "../../../utils/styles";
+import { ghostBtn, starLabel } from "../../../utils/style";
 import { MOCK_STAR_STORIES } from "../../../data/mockData";
 
 // STAR-format stories matched to predicted behavioral questions.

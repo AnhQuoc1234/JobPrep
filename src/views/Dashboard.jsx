@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import Stat from "../components/Stat";
 import BriefingCard from "../components/BriefingCard";
-import { primaryBtn } from "../utils/styles";
+import { primaryBtn } from "../utils/style";
 import { MOCK_BRIEFINGS } from "../data/mockData";
 
 export default function Dashboard({ onOpen, onNew }) {

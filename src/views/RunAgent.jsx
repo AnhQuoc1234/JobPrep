@@ -9,7 +9,7 @@ import LogLine from "../components/LogLine";
 import SourceItem from "../components/SourceItem";
 import PanelHeader from "../components/PanelHeader";
 import SteerModal from "../components/SteerModal";
-import { primaryBtn, ghostBtn } from "../utils/styles";
+import { primaryBtn, ghostBtn } from "../utils/style";
 import { MOCK_AGENT_LOG, MOCK_SOURCES } from "../data/mockData";
 
 // Live agent pipeline view. Shows the three-step flow:

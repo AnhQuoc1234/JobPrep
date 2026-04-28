@@ -1,7 +1,7 @@
 import { ChevronRight, Filter, Search } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import OutcomeTag from "../components/OutcomeTag";
-import { ghostBtn } from "../utils/styles";
+import { ghostBtn } from "../utils/style";
 import { formatDate } from "../utils/time";
 import { MOCK_BRIEFINGS, MOCK_ARCHIVE } from "../data/mockData";
 

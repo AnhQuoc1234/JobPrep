@@ -1,5 +1,5 @@
 import { Send } from "lucide-react";
-import { inputStyle, primaryBtn, ghostBtn } from "../utils/styles";
+import { inputStyle, primaryBtn, ghostBtn } from "../utils/style";
 
 // Modal for the human-in-the-loop steering pattern.
 // User pauses the agent, then injects context before research synthesizes.

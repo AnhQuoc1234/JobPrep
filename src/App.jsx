@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./styles/globals.css";
+import "./styles/global.css";
 
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./views/Dashboard";
