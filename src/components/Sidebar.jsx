@@ -1,10 +1,10 @@
 import { Layers, Plus, Archive, Settings } from "lucide-react";
 
 const NAV_ITEMS = [
-  { id: "dashboard", label: "Dashboard", icon: Layers },
-  { id: "onboarding", label: "New Briefing", icon: Plus },
-  { id: "history", label: "Archive", icon: Archive },
-  { id: "settings", label: "Settings", icon: Settings },
+  { id: "dashboard",  label: "Dashboard", icon: Layers  },
+  { id: "onboarding", label: "New plan",  icon: Plus    },
+  { id: "history",    label: "Archive",   icon: Archive },
+  { id: "settings",   label: "Settings",  icon: Settings },
 ];
 
 export default function Sidebar({ view, setView }) {
@@ -68,19 +68,12 @@ export default function Sidebar({ view, setView }) {
 
       {/* Status footer */}
       <div style={{ marginTop: "auto", paddingTop: 16, borderTop: "1px solid var(--border-subtle)" }}>
-        <div style={{
-          fontFamily: "var(--font-mono)", fontSize: 10,
-          color: "var(--fg-muted)", lineHeight: 1.6,
-        }}>
+        <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", lineHeight: 1.6 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-            <span style={{
-              width: 6, height: 6, borderRadius: "50%",
-              background: "var(--success)",
-              animation: "pulse-dot 2s infinite",
-            }} />
-            <span>3 agents online</span>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--success)", animation: "pulse-dot 2s infinite" }} />
+            <span>engine ready</span>
           </div>
-          <div>opus-4.7 · firecrawl</div>
+          <div>haiku · sonnet-4-6</div>
         </div>
       </div>
     </aside>

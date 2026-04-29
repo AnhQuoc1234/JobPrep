@@ -1,28 +1,24 @@
 import { Plus } from "lucide-react";
 import PageHeader from "../components/PageHeader";
 import Stat from "../components/Stat";
-import BriefingCard from "../components/BriefingCard";
+import PlanCard from "../components/BriefingCard";
 import { primaryBtn } from "../utils/style";
-import { MOCK_BRIEFINGS } from "../data/mockData";
+import { MOCK_PLANS } from "../data/mockData";
 
 export default function Dashboard({ onOpen, onNew }) {
-  // Stats derived from the briefings list
-  const upcoming = MOCK_BRIEFINGS.filter((b) => new Date(b.date) > new Date()).length;
-  const thisWeek = MOCK_BRIEFINGS.filter((b) => {
-    const d = new Date(b.date);
-    const now = new Date();
-    return d > now && d - now < 7 * 24 * 60 * 60 * 1000;
-  }).length;
+  const totalHours = MOCK_PLANS.reduce((s, p) => s + p.total_estimated_hours, 0);
+  const totalGaps  = MOCK_PLANS.reduce((s, p) => s + p.critical_gaps_count, 0);
+  const avgConf    = Math.round(MOCK_PLANS.reduce((s, p) => s + p.confidence_score, 0) / MOCK_PLANS.length * 100);
 
   return (
     <div style={{ padding: "40px 48px", maxWidth: 1400 }}>
       <PageHeader
         eyebrow="DASHBOARD / 04"
-        title="Active briefings"
-        subtitle="Every interview, weaponized with context."
+        title="Prep plans"
+        subtitle="Every target role, analyzed and roadmapped."
         action={
           <button onClick={onNew} style={primaryBtn}>
-            <Plus size={15} /> New briefing
+            <Plus size={15} /> New plan
           </button>
         }
       />
@@ -35,10 +31,10 @@ export default function Dashboard({ onOpen, onNew }) {
         borderRadius: 8, overflow: "hidden",
         marginBottom: 32,
       }}>
-        <Stat label="Total briefings" value="24" delta="+3 this week" />
-        <Stat label="Interviews upcoming" value={upcoming} delta={`${thisWeek} this week`} accent />
-        <Stat label="Avg completeness" value="89%" delta="+4% vs last mo" />
-        <Stat label="Win rate" value="62%" delta="based on 13 outcomes" />
+        <Stat label="Total plans"    value={MOCK_PLANS.length}           delta="across all targets" />
+        <Stat label="Critical gaps"  value={totalGaps}                   delta="across active plans" accent />
+        <Stat label="Hours planned"  value={`${totalHours}h`}            delta="total prep time" />
+        <Stat label="Avg confidence" value={`${avgConf}%`}               delta="based on market data" />
       </div>
 
       {/* Cards grid */}
@@ -47,21 +43,16 @@ export default function Dashboard({ onOpen, onNew }) {
         gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
         gap: 16,
       }}>
-        {MOCK_BRIEFINGS.map((b, i) => (
-          <BriefingCard
-            key={b.id}
-            briefing={b}
-            onClick={() => onOpen(b.id)}
-            delay={i * 60}
-          />
+        {MOCK_PLANS.map((p, i) => (
+          <PlanCard key={p.id} plan={p} onClick={() => onOpen(p.id)} delay={i * 60} />
         ))}
-        <NewBriefingTile onClick={onNew} />
+        <NewPlanTile onClick={onNew} />
       </div>
     </div>
   );
 }
 
-function NewBriefingTile({ onClick }) {
+function NewPlanTile({ onClick }) {
   return (
     <button
       onClick={onClick}
@@ -88,7 +79,7 @@ function NewBriefingTile({ onClick }) {
       }}
     >
       <Plus size={24} strokeWidth={1.5} />
-      Start new briefing
+      Start new plan
     </button>
   );
 }

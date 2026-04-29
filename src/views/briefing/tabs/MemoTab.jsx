@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
-import { Sparkles, TrendingUp, AlertTriangle } from "lucide-react";
+import { Sparkles, TrendingUp } from "lucide-react";
 import PanelHeader from "../../../components/PanelHeader";
 import KPI from "../../../components/KPI";
-import { MOCK_MEMO, MOCK_WATCHOUTS } from "../../../data/mockData";
+import { MOCK_ROADMAP } from "../../../data/mockData";
 
-// The headline tab — streaming strategy memo with section headers.
-// Production: replace the typewriter useEffect with a real LLM token stream
-// (e.g. Anthropic Messages API streaming, push tokens into setText).
+// Summary tab — streams the candidate summary with section-aware formatting.
+// Right column shows plan-level KPIs from the RoadmapPlan schema.
+
+const { candidate_summary, total_weeks, total_estimated_hours, confidence_score, critical_gaps, all_gaps } = MOCK_ROADMAP;
 
 export default function MemoTab() {
   const [text, setText] = useState("");
@@ -15,108 +16,58 @@ export default function MemoTab() {
     let i = 0;
     const t = setInterval(() => {
       i += 4;
-      setText(MOCK_MEMO.slice(0, i));
-      if (i >= MOCK_MEMO.length) clearInterval(t);
-    }, 15);
+      setText(candidate_summary.slice(0, i));
+      if (i >= candidate_summary.length) clearInterval(t);
+    }, 12);
     return () => clearInterval(t);
   }, []);
 
+  const confidencePct = Math.round(confidence_score * 100);
+  const importantGaps = all_gaps.filter((g) => g.priority === "important").length;
+
   return (
     <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 16 }}>
-      <MemoPanel text={text} />
+      <SummaryPanel text={text} full={candidate_summary} />
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <KPIBlock />
-        <WatchOutsBlock />
+        <PlanKPIs confidencePct={confidencePct} importantGaps={importantGaps} />
       </div>
     </div>
   );
 }
 
-function MemoPanel({ text }) {
-  const isStreaming = text.length < MOCK_MEMO.length;
-
+function SummaryPanel({ text, full }) {
+  const isStreaming = text.length < full.length;
   return (
-    <div style={{
-      background: "var(--bg-panel)",
-      border: "1px solid var(--border-subtle)",
-      borderRadius: 8, overflow: "hidden",
-    }}>
-      <PanelHeader icon={Sparkles} title="Strategy memo" tag="STREAMING · OPUS-4.7" />
+    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
+      <PanelHeader icon={Sparkles} title="Candidate summary" tag="RESUME PARSER · HAIKU" />
       <div style={{
         padding: 28,
-        fontFamily: "var(--font-serif)", fontSize: 16, lineHeight: 1.7,
-        color: "var(--fg-primary)",
-        whiteSpace: "pre-wrap",
+        fontFamily: "var(--font-serif)", fontSize: 16, lineHeight: 1.8,
+        color: "var(--fg-primary)", whiteSpace: "pre-wrap",
       }}>
-        {text.split("\n").map((line, i) => {
-          // Detect section headers (ALL CAPS lines)
-          const isHeader = line.match(/^[A-Z][A-Z\s]+$/) && line.length > 3;
-          if (isHeader) {
-            return (
-              <div key={i} style={{
-                fontFamily: "var(--font-mono)", fontSize: 11,
-                color: "var(--accent)", letterSpacing: "0.15em",
-                marginTop: 24, marginBottom: 8, fontWeight: 600,
-              }}>
-                {line}
-              </div>
-            );
-          }
-          return <span key={i}>{line}{"\n"}</span>;
-        })}
+        {text}
         {isStreaming && (
-          <span style={{
-            color: "var(--accent)",
-            animation: "blink-caret 1s infinite",
-          }}>▊</span>
+          <span style={{ color: "var(--accent)", animation: "blink-caret 1s infinite" }}>▊</span>
         )}
       </div>
     </div>
   );
 }
 
-function KPIBlock() {
-  return (
-    <div style={{
-      background: "var(--bg-panel)",
-      border: "1px solid var(--border-subtle)",
-      borderRadius: 8, overflow: "hidden",
-    }}>
-      <PanelHeader icon={TrendingUp} title="Quick stats" />
-      <div style={{
-        padding: 16,
-        display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12,
-      }}>
-        <KPI label="Valuation" value="$61.5B" />
-        <KPI label="Headcount" value="~1,200" />
-        <KPI label="Glassdoor" value="4.6 ★" />
-        <KPI label="Funding" value="Series F" />
-      </div>
-    </div>
-  );
-}
+function PlanKPIs({ confidencePct, importantGaps }) {
+  const confidenceColor =
+    confidencePct >= 80 ? "var(--accent)" :
+    confidencePct >= 60 ? "var(--warning)" : "var(--danger)";
 
-function WatchOutsBlock() {
   return (
-    <div style={{
-      background: "var(--bg-panel)",
-      border: "1px solid var(--border-subtle)",
-      borderRadius: 8, overflow: "hidden",
-    }}>
-      <PanelHeader icon={AlertTriangle} title="Watch-outs" />
-      <div style={{
-        padding: 16, display: "flex",
-        flexDirection: "column", gap: 10,
-      }}>
-        {MOCK_WATCHOUTS.map((w, i) => (
-          <div key={i} style={{
-            display: "flex", gap: 8,
-            fontSize: 12, color: "var(--fg-secondary)", lineHeight: 1.5,
-          }}>
-            <span style={{ color: "var(--warning)", flexShrink: 0 }}>!</span>
-            {w}
-          </div>
-        ))}
+    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
+      <PanelHeader icon={TrendingUp} title="Plan overview" />
+      <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 20 }}>
+        <KPI label="Confidence" value={<span style={{ color: confidenceColor }}>{confidencePct}%</span>} />
+        <KPI label="Total weeks"         value={`${total_weeks} weeks`} />
+        <KPI label="Estimated hours"     value={`${total_estimated_hours} hrs`} />
+        <KPI label="Critical gaps"       value={<span style={{ color: "var(--danger)" }}>{critical_gaps.length}</span>} />
+        <KPI label="Important gaps"      value={importantGaps} />
       </div>
     </div>
   );

@@ -1,169 +1,362 @@
-// All mock data lives here. Replace each export with an API call when wiring backend.
+// All mock data — replace each export with API calls when wiring backend.
+// Shapes match engine/roadmap/schemas.py exactly.
 
-export const MOCK_BRIEFINGS = [
+// --- Dashboard plan cards ---------------------------------------------------
+
+export const MOCK_PLANS = [
   {
-    id: "1", company: "Anthropic", role: "ML Research Engineer",
-    interviewer: "Chris Olah", round: "Final", format: "Onsite",
-    date: "2026-04-28T14:00:00", status: "ready", completeness: 94,
-    lastUpdated: "2h ago",
+    id: "1",
+    target_company: "Anthropic",
+    target_role: "ML Research Engineer",
+    total_weeks: 4,
+    confidence_score: 0.87,
+    total_estimated_hours: 42,
+    critical_gaps_count: 3,
+    generated_at: "2026-04-27T14:00:00",
+    status: "active",
+    last_updated: "2h ago",
   },
   {
-    id: "2", company: "Stripe", role: "Staff Software Engineer",
-    interviewer: "Patrick Collison", round: "1st Round", format: "Video",
-    date: "2026-04-26T10:00:00", status: "ready", completeness: 87,
-    lastUpdated: "1d ago",
+    id: "2",
+    target_company: "Stripe",
+    target_role: "Staff Software Engineer",
+    total_weeks: 6,
+    confidence_score: 0.74,
+    total_estimated_hours: 58,
+    critical_gaps_count: 2,
+    generated_at: "2026-04-26T10:00:00",
+    status: "active",
+    last_updated: "1d ago",
   },
   {
-    id: "3", company: "Figma", role: "Senior Frontend Engineer",
-    interviewer: "Dylan Field", round: "Panel", format: "Onsite",
-    date: "2026-05-02T11:00:00", status: "outdated", completeness: 71,
-    lastUpdated: "8d ago",
+    id: "3",
+    target_company: "Figma",
+    target_role: "Senior Frontend Engineer",
+    total_weeks: 3,
+    confidence_score: 0.91,
+    total_estimated_hours: 28,
+    critical_gaps_count: 1,
+    generated_at: "2026-04-18T11:00:00",
+    status: "complete",
+    last_updated: "8d ago",
   },
   {
-    id: "4", company: "OpenAI", role: "Applied AI Engineer",
-    interviewer: null, round: "1st Round", format: "Video",
-    date: "2026-05-08T15:00:00", status: "draft", completeness: 32,
-    lastUpdated: "3d ago",
+    id: "4",
+    target_company: "OpenAI",
+    target_role: "Applied AI Engineer",
+    total_weeks: 4,
+    confidence_score: 0.62,
+    total_estimated_hours: 35,
+    critical_gaps_count: 4,
+    generated_at: "2026-04-25T15:00:00",
+    status: "active",
+    last_updated: "3d ago",
   },
 ];
 
-export const MOCK_AGENT_LOG = [
-  { agent: "browser",  time: "14:22:01", msg: "Initializing Firecrawl session", type: "info" },
-  { agent: "browser",  time: "14:22:03", msg: "GET anthropic.com/careers → 200 OK", type: "success" },
-  { agent: "browser",  time: "14:22:05", msg: "Extracting role description for ML Research Engineer", type: "info" },
-  { agent: "browser",  time: "14:22:08", msg: "GET linkedin.com/in/colah → 200 OK", type: "success" },
-  { agent: "browser",  time: "14:22:11", msg: "GET glassdoor.com/Reviews/Anthropic → 200 OK", type: "success" },
-  { agent: "browser",  time: "14:22:14", msg: "Found 47 interview reviews mentioning interpretability", type: "info" },
-  { agent: "browser",  time: "14:22:17", msg: "GET levels.fyi/companies/anthropic → 200 OK", type: "success" },
-  { agent: "research", time: "14:22:22", msg: "Synthesizing 23 sources into company profile", type: "info" },
-  { agent: "research", time: "14:22:28", msg: "LLM call: claude-opus-4-7 (4.2k tokens)", type: "llm" },
-  { agent: "research", time: "14:22:34", msg: "Extracted 12 culture signals from Glassdoor", type: "success" },
-  { agent: "research", time: "14:22:38", msg: "Ranking news by interview relevance score", type: "info" },
-  { agent: "strategy", time: "14:22:45", msg: "Cross-referencing resume with job description", type: "info" },
-  { agent: "strategy", time: "14:22:51", msg: "LLM call: claude-opus-4-7 (8.7k tokens)", type: "llm" },
-  { agent: "strategy", time: "14:22:58", msg: "Generated 3 STAR stories matched to behavioral patterns", type: "success" },
-  { agent: "strategy", time: "14:23:02", msg: "Streaming strategy memo...", type: "info" },
-];
+// --- Full RoadmapPlan (open plan view) --------------------------------------
 
-export const MOCK_SOURCES = [
-  { url: "anthropic.com/careers", count: 4, agent: "browser" },
-  { url: "linkedin.com/in/colah", count: 8, agent: "browser" },
-  { url: "glassdoor.com/Reviews/Anthropic", count: 12, agent: "browser" },
-  { url: "levels.fyi/companies/anthropic", count: 3, agent: "browser" },
-  { url: "arxiv.org/abs/2401.xxxxx", count: 6, agent: "browser" },
-  { url: "techcrunch.com/2026/...", count: 2, agent: "browser" },
-];
+export const MOCK_ROADMAP = {
+  generated_at: "2026-04-27T14:00:00",
 
-export const MOCK_NEWS = [
-  {
-    title: "Anthropic releases Claude Opus 4.7 with breakthrough reasoning capabilities",
-    source: "TechCrunch", date: "2 days ago", relevance: 96,
-    tip: "Mention this when asked about staying current — shows you follow the company's research.",
-  },
-  {
-    title: "Anthropic raises $4B Series F led by Lightspeed at $61.5B valuation",
-    source: "Bloomberg", date: "5 days ago", relevance: 89,
-    tip: "Use this to ask about scaling research teams — shows commercial awareness.",
-  },
-  {
-    title: "New interpretability paper: 'Circuit-level feature attribution in transformers'",
-    source: "arXiv", date: "1 week ago", relevance: 94,
-    tip: "If interviewer is on this paper, reference a specific finding from section 3.2.",
-  },
-  {
-    title: "Anthropic announces partnership with major financial institutions",
-    source: "Reuters", date: "2 weeks ago", relevance: 67,
-    tip: "Useful context if asked about applied research vs pure science.",
-  },
-];
+  candidate_summary: `Senior ML engineer with 5 years in production NLP systems. Strong in PyTorch, distributed training, and hypothesis-driven debugging — all transferable to interpretability research. Core gap is hands-on mech-interp experience: no published circuits work, no TransformerLens experiments on record. Background shows the right instincts; the missing piece is domain vocabulary and tooling.`,
 
-export const MOCK_QUESTIONS_TO_ASK = [
-  { q: "How does the interpretability team decide which circuits to prioritize investigating?", why: "Shows you understand the practical research bottleneck, not just the theory." },
-  { q: "What's the feedback loop between safety research and product deployment?", why: "Threads research depth with commercial reality — rare combination." },
-  { q: "How has the team's mental model of mech-interp changed in the last 12 months?", why: "Signals you read the recent papers and care about evolving paradigms." },
-];
+  target_role: "ML Research Engineer",
+  target_company: "Anthropic",
+  total_weeks: 4,
+  total_estimated_hours: 42,
+  confidence_score: 0.87,
 
-export const MOCK_LIKELY_QUESTIONS = [
-  { q: "Walk me through how you'd reverse-engineer a small transformer's behavior on a specific task.", category: "Technical Deep-Dive" },
-  { q: "Tell me about a time you disagreed with a senior researcher's approach.", category: "Behavioral" },
-  { q: "What recent paper has changed how you think about LLM internals?", category: "Research Awareness" },
-  { q: "How would you design an experiment to measure feature superposition?", category: "Research Design" },
-];
-
-export const MOCK_STAR_STORIES = [
-  {
-    title: "Reverse-engineered attention pattern in production model",
-    s: "Production sentiment classifier was misclassifying sarcasm 31% of the time.",
-    t: "Identify the failure mode at the circuit level, not just retrain.",
-    a: "Used activation patching across 800 examples, found a single attention head over-weighting negation tokens. Patched the head's output and validated.",
-    r: "Reduced sarcasm error rate to 8%. Wrote internal post that became standard debug methodology.",
-    matchedTo: "Technical Deep-Dive question",
-  },
-  {
-    title: "Pushed back on premature scaling decision",
-    s: "Team wanted to 10x training compute on architecture I believed was flawed.",
-    t: "Convince senior staff without burning political capital.",
-    a: "Ran small-scale ablation in 48hrs showing the bottleneck. Presented data, not opinion. Proposed alternative.",
-    r: "Saved ~$2M in compute. Alternative architecture became the basis for next quarter's roadmap.",
-    matchedTo: "Behavioral question on disagreement",
-  },
-];
-
-export const MOCK_INTERVIEWER = {
-  name: "Chris Olah",
-  initials: "CO",
-  title: "Co-founder, Interpretability Lead",
-  facts: [
-    { label: "Tenure", value: "~4 yrs at Anthropic" },
-    { label: "Prior", value: "OpenAI, Google Brain" },
-    { label: "Notable", value: "Distill.pub founder" },
-    { label: "Recent paper", value: '"Circuits in superposition" (2026)' },
+  critical_gaps: [
+    {
+      skill: "mechanistic interpretability",
+      market_frequency: 0.89,
+      candidate_has: false,
+      effort_level: "high",
+      priority: "critical",
+      rationale: "Core methodology of the team — circuits analysis is expected knowledge for this role.",
+    },
+    {
+      skill: "transformer circuits",
+      market_frequency: 0.82,
+      candidate_has: false,
+      effort_level: "high",
+      priority: "critical",
+      rationale: "Foundational framework for interpreting attention heads — the team's core research paradigm.",
+    },
+    {
+      skill: "activation patching",
+      market_frequency: 0.76,
+      candidate_has: false,
+      effort_level: "medium",
+      priority: "critical",
+      rationale: "Standard experimental technique; interviewers will expect hands-on familiarity.",
+    },
   ],
-  styleSignals: [
-    { signal: "Asks about a paper, then probes one finding deeply", weight: "high" },
-    { signal: "Tests epistemic honesty — says 'I don't know' often, expects you to also", weight: "high" },
-    { signal: "Dislikes hype words: 'AGI', 'revolutionary', 'paradigm shift'", weight: "medium" },
-    { signal: "Likely to ask about a recent failed experiment of yours", weight: "medium" },
+
+  all_gaps: [
+    {
+      skill: "mechanistic interpretability",
+      market_frequency: 0.89,
+      candidate_has: false,
+      effort_level: "high",
+      priority: "critical",
+      rationale: "Core methodology of the team — circuits analysis is expected knowledge for this role.",
+    },
+    {
+      skill: "transformer circuits",
+      market_frequency: 0.82,
+      candidate_has: false,
+      effort_level: "high",
+      priority: "critical",
+      rationale: "Foundational framework for interpreting attention heads — the team's core research paradigm.",
+    },
+    {
+      skill: "activation patching",
+      market_frequency: 0.76,
+      candidate_has: false,
+      effort_level: "medium",
+      priority: "critical",
+      rationale: "Standard experimental technique; interviewers will expect hands-on familiarity.",
+    },
+    {
+      skill: "jax/xla",
+      market_frequency: 0.61,
+      candidate_has: false,
+      effort_level: "medium",
+      priority: "important",
+      rationale: "Anthropic's training stack uses JAX; PyTorch background transfers but fluency expected.",
+    },
+    {
+      skill: "distributed training",
+      market_frequency: 0.54,
+      candidate_has: true,
+      effort_level: "low",
+      priority: "important",
+      rationale: "Candidate has production experience — refresh on specifics at Anthropic's scale.",
+    },
+    {
+      skill: "research paper writing",
+      market_frequency: 0.48,
+      candidate_has: false,
+      effort_level: "high",
+      priority: "important",
+      rationale: "Role expects research output; no published papers in candidate's background.",
+    },
+    {
+      skill: "rlhf",
+      market_frequency: 0.41,
+      candidate_has: false,
+      effort_level: "medium",
+      priority: "optional",
+      rationale: "Useful context but not core to the interpretability research track.",
+    },
+    {
+      skill: "bayesian optimization",
+      market_frequency: 0.32,
+      candidate_has: true,
+      effort_level: "low",
+      priority: "optional",
+      rationale: "Nice-to-have for hyperparameter tuning; candidate already has this.",
+    },
   ],
+
+  quick_wins: [
+    {
+      title: "Read 'A Mathematical Framework for Transformer Circuits'",
+      description: "The foundational paper for the team's methodology. Focus on sections 1–3 on attention heads and MLP circuits.",
+      category: "skill",
+      priority: "must",
+      estimated_hours: 3,
+      resources: [{ title: "Transformer Circuits Thread", url: "https://transformer-circuits.pub", type: "article", free: true }],
+      addresses_gap: ["transformer circuits", "mechanistic interpretability"],
+    },
+    {
+      title: "Set up TransformerLens and run the activation patching tutorial",
+      description: "TransformerLens is the standard mech-interp library. Run the IOI tutorial end-to-end before moving to original experiments.",
+      category: "skill",
+      priority: "must",
+      estimated_hours: 4,
+      resources: [{ title: "TransformerLens docs", url: "https://neelnanda-io.github.io/TransformerLens", type: "docs", free: true }],
+      addresses_gap: ["activation patching", "mechanistic interpretability"],
+    },
+    {
+      title: "Prepare 2 discussion points from recent Anthropic preprints",
+      description: "Pick one finding you'd push back on and one you'd extend. Interviewers probe depth of engagement, not just familiarity.",
+      category: "interview_prep",
+      priority: "must",
+      estimated_hours: 2,
+      resources: [{ title: "Anthropic research blog", url: "https://www.anthropic.com/research", type: "article", free: true }],
+      addresses_gap: ["mechanistic interpretability"],
+    },
+  ],
+
+  weeks: [
+    {
+      week_number: 1,
+      theme: "Interpretability foundations",
+      milestone: "Can explain activation patching and name 3 circuits from the literature.",
+      tasks: [
+        {
+          title: "Complete the Circuits in Transformers reading sequence",
+          description: "Work through the transformer circuits thread in order, building vocabulary of attention heads, MLP layers, and feature circuits.",
+          category: "skill",
+          priority: "must",
+          estimated_hours: 6,
+          resources: [{ title: "Transformer Circuits Thread", url: "https://transformer-circuits.pub", type: "article", free: true }],
+          addresses_gap: ["transformer circuits", "mechanistic interpretability"],
+        },
+        {
+          title: "Implement induction heads from scratch in TransformerLens",
+          description: "Replicate the induction head experiment. Understanding by building is faster than reading — gives you a concrete example to reference.",
+          category: "skill",
+          priority: "must",
+          estimated_hours: 5,
+          resources: [{ title: "ARENA 3.0 — Chapter 1", url: "https://arena3-chapter1-transformer-interp.streamlit.app", type: "course", free: true }],
+          addresses_gap: ["activation patching", "mechanistic interpretability"],
+        },
+        {
+          title: "Mock interview: explain a circuit finding aloud",
+          description: "Practice explaining the induction head mechanism as if to a skeptical researcher. Record yourself — fluency matters as much as accuracy.",
+          category: "interview_prep",
+          priority: "must",
+          estimated_hours: 1,
+          resources: [],
+          addresses_gap: ["mechanistic interpretability"],
+        },
+      ],
+    },
+    {
+      week_number: 2,
+      theme: "Hands-on activation patching",
+      milestone: "Have run at least one original activation patching experiment on a toy model.",
+      tasks: [
+        {
+          title: "Run an original IOI-style experiment on GPT-2",
+          description: "Pick a behavior different from indirect object identification. Hypothesize which circuits are responsible, test it, write a one-paragraph summary.",
+          category: "project",
+          priority: "must",
+          estimated_hours: 8,
+          resources: [{ title: "ARENA mech-interp exercises", url: "https://arena3-chapter1-transformer-interp.streamlit.app", type: "course", free: true }],
+          addresses_gap: ["activation patching", "transformer circuits"],
+        },
+        {
+          title: "JAX fundamentals — 3-hour crash course",
+          description: "Work through the JAX quickstart. Focus on jit, vmap, and grad. Your PyTorch intuitions transfer directly.",
+          category: "skill",
+          priority: "should",
+          estimated_hours: 3,
+          resources: [{ title: "JAX Quickstart", url: "https://jax.readthedocs.io/en/latest/quickstart.html", type: "docs", free: true }],
+          addresses_gap: ["jax/xla"],
+        },
+      ],
+    },
+    {
+      week_number: 3,
+      theme: "Research design & interview prep",
+      milestone: "Can sketch a novel experiment design in 10 minutes under pressure.",
+      tasks: [
+        {
+          title: "Design an experiment to measure feature superposition",
+          description: "Write a 1-page research brief: hypothesis, method, expected results, controls. This is a very likely technical interview question.",
+          category: "interview_prep",
+          priority: "must",
+          estimated_hours: 3,
+          resources: [{ title: "Toy Models of Superposition", url: "https://transformer-circuits.pub/2022/toy_model/index.html", type: "article", free: true }],
+          addresses_gap: ["mechanistic interpretability"],
+        },
+        {
+          title: "Prepare behavioral stories: pushing back on a technical decision",
+          description: "Prepare 2 stories where you disagreed with a senior engineer and had data to back it up. Anthropic interviews probe epistemic independence.",
+          category: "interview_prep",
+          priority: "must",
+          estimated_hours: 2,
+          resources: [],
+          addresses_gap: [],
+        },
+        {
+          title: "ARENA Chapter 1 completion sprint",
+          description: "Finish all exercises. Strong signal of seriousness if you can reference specific results — shows you did the work, not just read about it.",
+          category: "skill",
+          priority: "should",
+          estimated_hours: 6,
+          resources: [{ title: "ARENA 3.0", url: "https://arena3-chapter1-transformer-interp.streamlit.app", type: "course", free: true }],
+          addresses_gap: ["activation patching", "transformer circuits"],
+        },
+      ],
+    },
+    {
+      week_number: 4,
+      theme: "Final polish & dry runs",
+      milestone: "Ready to walk into the interview with concrete examples and a clear narrative.",
+      tasks: [
+        {
+          title: "Write up your patching experiment as a 1-page brief",
+          description: "Document hypothesis, method, findings, and what you'd investigate next. This becomes your strongest concrete example in the interview.",
+          category: "project",
+          priority: "must",
+          estimated_hours: 2,
+          resources: [],
+          addresses_gap: ["mechanistic interpretability"],
+        },
+        {
+          title: "Full mock interview — technical + behavioral",
+          description: "Cover: a circuits explanation, an experiment design question, and a disagreement story. Time each section.",
+          category: "interview_prep",
+          priority: "must",
+          estimated_hours: 2,
+          resources: [],
+          addresses_gap: [],
+        },
+      ],
+    },
+  ],
+
+  market_snapshot: {
+    role_title: "ML Research Engineer",
+    postings_analyzed: 47,
+    top_required_skills: [
+      { skill: "python",                      frequency: 0.94, is_required: true,  avg_years_expected: 4 },
+      { skill: "mechanistic interpretability",frequency: 0.89, is_required: true,  avg_years_expected: 2 },
+      { skill: "pytorch",                     frequency: 0.85, is_required: true,  avg_years_expected: 3 },
+      { skill: "transformer circuits",        frequency: 0.82, is_required: true,  avg_years_expected: null },
+      { skill: "activation patching",         frequency: 0.76, is_required: true,  avg_years_expected: 1 },
+      { skill: "jax",                         frequency: 0.61, is_required: true,  avg_years_expected: 1 },
+    ],
+    top_nice_to_have_skills: [
+      { skill: "distributed training",        frequency: 0.54, is_required: false, avg_years_expected: null },
+      { skill: "research paper writing",      frequency: 0.48, is_required: false, avg_years_expected: null },
+      { skill: "rlhf",                        frequency: 0.41, is_required: false, avg_years_expected: null },
+      { skill: "bayesian optimization",       frequency: 0.32, is_required: false, avg_years_expected: null },
+    ],
+    common_tools: ["TransformerLens", "PyTorch", "JAX", "Weights & Biases", "CUDA", "HuggingFace", "NumPy", "einops"],
+    salary_range: [385000, 720000],
+  },
 };
 
-export const MOCK_CULTURE_KEYWORDS = [
-  "Research-first", "Direct feedback", "High autonomy", "Slow hiring",
-  "Safety-focused", "Long context", "Async-friendly", "Paper-driven",
+// --- Engine activity log (RunAgent view) ------------------------------------
+
+export const MOCK_ENGINE_LOG = [
+  { step: "parser",  time: "14:22:01", msg: "Extracting text from resume.pdf",                     type: "info"    },
+  { step: "parser",  time: "14:22:03", msg: "LLM call: claude-haiku-4-5 (2.1k tokens)",           type: "llm"     },
+  { step: "parser",  time: "14:22:06", msg: "Profile extracted — 8 skills, 12 technologies",       type: "success" },
+  { step: "parser",  time: "14:22:07", msg: "CandidateProfile built: 5 yrs exp, 3 work entries",   type: "success" },
+  { step: "market",  time: "14:22:09", msg: "Analyzing 47 job postings for ML Research Engineer",  type: "info"    },
+  { step: "market",  time: "14:22:13", msg: "LLM call: claude-sonnet-4-6 (5.3k tokens)",          type: "llm"     },
+  { step: "market",  time: "14:22:19", msg: "MarketSnapshot built — 6 required skills identified", type: "success" },
+  { step: "market",  time: "14:22:21", msg: "Running gap analysis against candidate profile",      type: "info"    },
+  { step: "market",  time: "14:22:24", msg: "3 critical gaps, 3 important gaps, 2 optional",       type: "success" },
+  { step: "roadmap", time: "14:22:26", msg: "Building 4-week roadmap prompt",                      type: "info"    },
+  { step: "roadmap", time: "14:22:28", msg: "LLM call: claude-sonnet-4-6 (8.7k tokens)",          type: "llm"     },
+  { step: "roadmap", time: "14:22:39", msg: "Generated 3 quick wins and 14 weekly tasks",          type: "success" },
+  { step: "roadmap", time: "14:22:41", msg: "RoadmapPlan complete — confidence: 0.87",             type: "success" },
 ];
 
-export const MOCK_KPIS = [
-  { label: "Valuation", value: "$61.5B" },
-  { label: "Headcount", value: "~1,200" },
-  { label: "Founded", value: "2021" },
-  { label: "Funding raised", value: "$8.6B" },
-  { label: "Glassdoor", value: "4.6 ★" },
-  { label: "Interview difficulty", value: "4.4 / 5" },
-];
-
-export const MOCK_MEMO = `Anthropic is interviewing for an interpretability-focused ML Research Engineer role, and Chris Olah will be your final-round interviewer. The bar is research depth, not breadth.
-
-POSITIONING ANGLE
-Lead with your reverse-engineering of the sentiment classifier — it's the closest thing in your background to mech-interp work and demonstrates the exact mode of thinking Olah's team values: surgical, hypothesis-driven, willing to go past "it works" into "I know why."
-
-WHAT THE INTERVIEWER WILL PROBE
-Olah's interview style, based on Glassdoor patterns and his published talks, is to start broad ("what paper changed how you think?") then pull on a specific thread until you hit the limit of your understanding. He's not testing whether you know everything — he's testing whether you know where your knowledge ends.
-
-HOW TO STAND OUT
-Reference the recent circuits work (specifically the feature attribution paper from this month) — but only if you've actually read it. Don't bluff. The way to differentiate: when he asks the inevitable "what would you do differently?" question on a paper, give a concrete experimental design, not a critique.
-
-ONE RISK TO MITIGATE
-Your background skews applied/production. Frame this as an asset (you've debugged real models under pressure) but be ready for the implicit question: "why research now?" Have a 30-second answer that's about the work, not the credentialing.`;
-
-export const MOCK_WATCHOUTS = [
-  "Don't oversell academic credentials — Olah values output over pedigree.",
-  "If asked about safety, avoid corporate-speak. Be specific.",
-  "Final round = compensation discussion likely. Have a number ready.",
-];
+// --- History / archive rows -------------------------------------------------
 
 export const MOCK_ARCHIVE = [
-  { id: "5", company: "Scale AI", role: "ML Engineer", date: "2026-03-15T10:00:00", outcome: "offer", completeness: 92 },
-  { id: "6", company: "Cohere", role: "Research Engineer", date: "2026-02-28T14:00:00", outcome: "rejected", completeness: 78 },
-  { id: "7", company: "Hugging Face", role: "ML Infrastructure", date: "2026-01-12T11:00:00", outcome: "offer", completeness: 88 },
-  { id: "8", company: "Mistral", role: "Researcher", date: "2025-12-08T13:00:00", outcome: "withdrew", completeness: 65 },
+  { id: "5", target_company: "Scale AI",     target_role: "ML Engineer",      generated_at: "2026-03-15T10:00:00", outcome: "offer",    confidence_score: 0.92 },
+  { id: "6", target_company: "Cohere",       target_role: "Research Engineer", generated_at: "2026-02-28T14:00:00", outcome: "rejected", confidence_score: 0.78 },
+  { id: "7", target_company: "Hugging Face", target_role: "ML Infrastructure", generated_at: "2026-01-12T11:00:00", outcome: "offer",    confidence_score: 0.88 },
+  { id: "8", target_company: "Mistral",      target_role: "Researcher",        generated_at: "2025-12-08T13:00:00", outcome: "withdrew", confidence_score: 0.65 },
 ];
