@@ -7,19 +7,42 @@ import Onboarding from "./views/Onboarding";
 import RunAgent from "./views/RunAgent";
 import Briefing from "./views/briefing/Briefing";
 import History from "./views/History";
-import Settings from "./views/Settings";
+import { MOCK_ROADMAP, MOCK_PLANS } from "./data/mockData";
 
-// Top-level view router. In production, swap this for React Router or
-// Next.js routing — the structure (one component per view) stays the same.
+function buildPlan(overrides) {
+  return { ...MOCK_ROADMAP, ...overrides };
+}
 
 export default function App() {
-  const [view, setView] = useState("dashboard");
-  // eslint-disable-next-line no-unused-vars
-  const [activeBriefingId, setActiveBriefingId] = useState(null);
+  const [view, setView]           = useState("dashboard");
+  const [currentForm, setCurrentForm] = useState(null);
+  const [activePlan, setActivePlan]   = useState(null);
 
-  // Open a briefing from any view that has briefing IDs (Dashboard, History)
-  const openBriefing = (id) => {
-    setActiveBriefingId(id);
+  const handleOnboardingComplete = (form) => {
+    setCurrentForm(form);
+    setView("run");
+  };
+
+  const handleRunComplete = () => {
+    setActivePlan(buildPlan({
+      target_company: currentForm.company,
+      target_role:    currentForm.role,
+      total_weeks:    parseInt(currentForm.weeks, 10) || 4,
+    }));
+    setView("briefing");
+  };
+
+  const openPlan = (id) => {
+    const p = MOCK_PLANS.find((x) => x.id === id);
+    if (p) {
+      setActivePlan(buildPlan({
+        target_company:        p.target_company,
+        target_role:           p.target_role,
+        total_weeks:           p.total_weeks,
+        total_estimated_hours: p.total_estimated_hours,
+        confidence_score:      p.confidence_score,
+      }));
+    }
     setView("briefing");
   };
 
@@ -31,35 +54,24 @@ export default function App() {
       fontFamily: "var(--font-body)",
     }}>
       <div className="grain" />
-
       <Sidebar view={view} setView={setView} />
 
-      <main style={{
-        marginLeft: 220,
-        position: "relative", zIndex: 2,
-      }}>
+      <main style={{ marginLeft: 220, position: "relative", zIndex: 2 }}>
         {view === "dashboard" && (
-          <Dashboard
-            onOpen={openBriefing}
-            onNew={() => setView("onboarding")}
-          />
+          <Dashboard onOpen={openPlan} onNew={() => setView("onboarding")} />
         )}
         {view === "onboarding" && (
-          <Onboarding
-            onComplete={() => setView("run")}
-            onBack={() => setView("dashboard")}
-          />
+          <Onboarding onComplete={handleOnboardingComplete} onBack={() => setView("dashboard")} />
         )}
         {view === "run" && (
-          <RunAgent onComplete={() => setView("briefing")} />
+          <RunAgent form={currentForm} onComplete={handleRunComplete} />
         )}
         {view === "briefing" && (
-          <Briefing onBack={() => setView("dashboard")} />
+          <Briefing plan={activePlan || MOCK_ROADMAP} onBack={() => setView("dashboard")} />
         )}
         {view === "history" && (
-          <History onOpen={openBriefing} />
+          <History onOpen={openPlan} />
         )}
-        {view === "settings" && <Settings />}
       </main>
     </div>
   );

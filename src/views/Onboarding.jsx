@@ -11,8 +11,9 @@ import { inputStyle, primaryBtn, ghostBtn } from "../utils/style";
 // Step 3 → resume PDF (resume_parser)
 
 export default function Onboarding({ onComplete, onBack }) {
-  const [step, setStep] = useState(1);
-  const [form, setForm] = useState({
+  const [step, setStep]   = useState(1);
+  const [error, setError] = useState(null);
+  const [form, setForm]   = useState({
     company: "", role: "",
     weeks: "4", goal: "",
     resume: null,
@@ -21,11 +22,21 @@ export default function Onboarding({ onComplete, onBack }) {
   const titles = { 1: "Target", 2: "Timeline", 3: "Your resume" };
 
   const handleNext = () => {
+    if (step === 1) {
+      if (!form.company.trim()) { setError("Company is required."); return; }
+      if (!form.role.trim())    { setError("Role is required.");    return; }
+    }
+    if (step === 3 && !form.resume) {
+      setError("Resume is required — the engine needs it to run gap analysis.");
+      return;
+    }
+    setError(null);
     if (step < 3) setStep(step + 1);
     else onComplete(form);
   };
 
   const handleBack = () => {
+    setError(null);
     if (step > 1) setStep(step - 1);
     else onBack();
   };
@@ -60,13 +71,28 @@ export default function Onboarding({ onComplete, onBack }) {
         {step === 3 && <StepResume form={form} setForm={setForm} />}
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 24 }}>
-        <button onClick={handleBack} style={ghostBtn}>
-          {step > 1 ? "Back" : "Cancel"}
-        </button>
-        <button onClick={handleNext} style={primaryBtn}>
-          {step < 3 ? <>Continue <ArrowRight size={14} /></> : <>Run engine <Zap size={14} /></>}
-        </button>
+      <div style={{ marginTop: 24 }}>
+        {error && (
+          <div style={{
+            fontSize: 12, color: "var(--danger)",
+            fontFamily: "var(--font-mono)",
+            marginBottom: 12,
+            padding: "8px 12px",
+            background: "var(--danger)10",
+            border: "1px solid var(--danger)33",
+            borderRadius: 6,
+          }}>
+            {error}
+          </div>
+        )}
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <button onClick={handleBack} style={ghostBtn}>
+            {step > 1 ? "Back" : "Cancel"}
+          </button>
+          <button onClick={handleNext} style={primaryBtn}>
+            {step < 3 ? <>Continue <ArrowRight size={14} /></> : <>Run engine <Zap size={14} /></>}
+          </button>
+        </div>
       </div>
     </div>
   );

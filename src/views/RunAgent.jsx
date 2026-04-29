@@ -11,7 +11,9 @@ import { MOCK_ENGINE_LOG, MOCK_ROADMAP } from "../data/mockData";
 // Production: replace setInterval with a WebSocket / SSE stream that pushes
 // { step, progress, logEntry } events.
 
-export default function RunAgent({ onComplete }) {
+export default function RunAgent({ form, onComplete }) {
+  const company = form?.company || "—";
+  const role    = form?.role    || "—";
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState({ parser: 100, market: 55, roadmap: 15 });
   const [logIdx, setLogIdx] = useState(4);
@@ -37,10 +39,10 @@ export default function RunAgent({ onComplete }) {
   return (
     <div style={{ padding: "40px 48px", maxWidth: 1400 }}>
       <PageHeader
-        eyebrow="RUNNING / PLAN_001"
+        eyebrow={`RUNNING / ${company.toUpperCase()}`}
         title={
           <span>
-            Engine working{" "}
+            {company} · {role}{" "}
             <span style={{ color: "var(--accent)", fontFamily: "var(--font-mono)", animation: "blink-caret 1s infinite" }}>▊</span>
           </span>
         }

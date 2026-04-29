@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Zap, Calendar, ExternalLink, ChevronDown, ChevronRight } from "lucide-react";
 import PanelHeader from "../../../components/PanelHeader";
-import { MOCK_ROADMAP } from "../../../data/mockData";
-
-const { quick_wins, weeks } = MOCK_ROADMAP;
 
 const CATEGORY_COLOR = {
   skill:          "var(--browser)",
@@ -13,48 +10,40 @@ const CATEGORY_COLOR = {
 };
 
 const PRIORITY_BADGE = {
-  must:         { label: "MUST",      color: "var(--danger)"  },
-  should:       { label: "SHOULD",    color: "var(--warning)" },
-  nice_to_have: { label: "NICE",      color: "var(--fg-muted)"},
+  must:         { label: "MUST",   color: "var(--danger)"  },
+  should:       { label: "SHOULD", color: "var(--warning)" },
+  nice_to_have: { label: "NICE",   color: "var(--fg-muted)"},
 };
 
-export default function RoadmapTab() {
+export default function RoadmapTab({ plan }) {
   const [openWeek, setOpenWeek] = useState(1);
+  const { quick_wins, weeks } = plan;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <QuickWinsPanel />
-      <WeeklyPlan openWeek={openWeek} setOpenWeek={setOpenWeek} />
-    </div>
-  );
-}
-
-function QuickWinsPanel() {
-  return (
-    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
-      <PanelHeader icon={Zap} title="Quick wins" tag="NEXT 3 DAYS" />
-      <div style={{ padding: 8 }}>
-        {quick_wins.map((task, i) => (
-          <TaskRow key={i} task={task} isLast={i === quick_wins.length - 1} />
-        ))}
+      {/* Quick wins */}
+      <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
+        <PanelHeader icon={Zap} title="Quick wins" tag="NEXT 3 DAYS" />
+        <div style={{ padding: 8 }}>
+          {quick_wins.map((task, i) => (
+            <TaskRow key={i} task={task} isLast={i === quick_wins.length - 1} />
+          ))}
+        </div>
       </div>
-    </div>
-  );
-}
 
-function WeeklyPlan({ openWeek, setOpenWeek }) {
-  return (
-    <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
-      <PanelHeader icon={Calendar} title="Week-by-week" tag={`${weeks.length} WEEKS`} />
-      <div style={{ padding: 8 }}>
-        {weeks.map((week) => (
-          <WeekAccordion
-            key={week.week_number}
-            week={week}
-            open={openWeek === week.week_number}
-            onToggle={() => setOpenWeek(openWeek === week.week_number ? null : week.week_number)}
-          />
-        ))}
+      {/* Week accordion */}
+      <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
+        <PanelHeader icon={Calendar} title="Week-by-week" tag={`${weeks.length} WEEKS`} />
+        <div style={{ padding: 8 }}>
+          {weeks.map((week) => (
+            <WeekAccordion
+              key={week.week_number}
+              week={week}
+              open={openWeek === week.week_number}
+              onToggle={() => setOpenWeek(openWeek === week.week_number ? null : week.week_number)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -79,7 +68,7 @@ function WeekAccordion({ week, open, onToggle }) {
         onMouseLeave={(e) => { if (!open) e.currentTarget.style.background = "none"; }}
       >
         {open
-          ? <ChevronDown size={14} style={{ color: "var(--accent)", flexShrink: 0 }} />
+          ? <ChevronDown  size={14} style={{ color: "var(--accent)",    flexShrink: 0 }} />
           : <ChevronRight size={14} style={{ color: "var(--fg-muted)", flexShrink: 0 }} />
         }
         <div style={{ flex: 1 }}>
@@ -109,29 +98,20 @@ function WeekAccordion({ week, open, onToggle }) {
 
 function TaskRow({ task, isLast, indent }) {
   const catColor = CATEGORY_COLOR[task.category] || "var(--fg-muted)";
-  const badge = PRIORITY_BADGE[task.priority] || PRIORITY_BADGE.should;
+  const badge    = PRIORITY_BADGE[task.priority]  || PRIORITY_BADGE.should;
 
   return (
-    <div style={{
-      padding: indent ? "12px 20px 12px 44px" : "16px 20px",
-      borderBottom: isLast ? "none" : "1px solid var(--border-subtle)",
-    }}>
+    <div style={{ padding: indent ? "12px 20px 12px 44px" : "16px 20px", borderBottom: isLast ? "none" : "1px solid var(--border-subtle)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 6 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }}>
           <div style={{ width: 6, height: 6, borderRadius: "50%", background: catColor, flexShrink: 0 }} />
           <span style={{ fontSize: 14, fontWeight: 500 }}>{task.title}</span>
         </div>
         <div style={{ display: "flex", gap: 6, flexShrink: 0, alignItems: "center" }}>
-          <span style={{
-            fontFamily: "var(--font-mono)", fontSize: 9, fontWeight: 600,
-            color: badge.color, letterSpacing: "0.1em",
-            padding: "2px 5px", border: `1px solid ${badge.color}44`, borderRadius: 3,
-          }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, fontWeight: 600, color: badge.color, letterSpacing: "0.1em", padding: "2px 5px", border: `1px solid ${badge.color}44`, borderRadius: 3 }}>
             {badge.label}
           </span>
-          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--fg-muted)" }}>
-            {task.estimated_hours}h
-          </span>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--fg-muted)" }}>{task.estimated_hours}h</span>
         </div>
       </div>
 
@@ -151,9 +131,7 @@ function TaskRow({ task, isLast, indent }) {
                 display: "inline-flex", alignItems: "center", gap: 4,
                 fontFamily: "var(--font-mono)", fontSize: 10,
                 color: "var(--accent)", textDecoration: "none",
-                padding: "2px 6px",
-                border: "1px solid var(--accent)33",
-                borderRadius: 3,
+                padding: "2px 6px", border: "1px solid var(--accent)33", borderRadius: 3,
               }}
             >
               {r.title} {r.url && <ExternalLink size={9} />}

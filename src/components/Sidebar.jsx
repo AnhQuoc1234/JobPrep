@@ -1,10 +1,9 @@
-import { Layers, Plus, Archive, Settings } from "lucide-react";
+import { Layers, Plus, Archive } from "lucide-react";
 
 const NAV_ITEMS = [
   { id: "dashboard",  label: "Dashboard", icon: Layers  },
   { id: "onboarding", label: "New plan",  icon: Plus    },
   { id: "history",    label: "Archive",   icon: Archive },
-  { id: "settings",   label: "Settings",  icon: Settings },
 ];
 
 export default function Sidebar({ view, setView }) {
@@ -26,11 +25,10 @@ export default function Sidebar({ view, setView }) {
           AGENT.V1
         </div>
         <div style={{
-          fontFamily: "var(--font-serif)", fontSize: 22, fontWeight: 600,
+          fontFamily: "var(--font-serif)", fontSize: 26, fontWeight: 600,
           letterSpacing: "-0.02em", lineHeight: 1.1,
         }}>
-          interview<br />
-          <span style={{ fontStyle: "italic", color: "var(--accent)" }}>recon</span>
+          Job<span style={{ fontStyle: "italic", color: "var(--accent)" }}>Prep</span>
         </div>
       </div>
 

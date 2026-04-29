@@ -6,7 +6,6 @@ import RoadmapTab from "./tabs/RoadmapTab";
 import GapsTab from "./tabs/GapsTab";
 import MarketTab from "./tabs/MarketTab";
 import { ghostBtn } from "../../utils/style";
-import { MOCK_ROADMAP } from "../../data/mockData";
 
 const TABS = [
   { id: "memo",    label: "Summary"  },
@@ -15,15 +14,15 @@ const TABS = [
   { id: "market",  label: "Market"   },
 ];
 
-export default function Briefing({ onBack }) {
+export default function Briefing({ plan, onBack }) {
   const [tab, setTab] = useState("memo");
-  const { target_company, target_role, total_weeks, total_estimated_hours, confidence_score } = MOCK_ROADMAP;
+  const { target_company, target_role, total_weeks, total_estimated_hours, confidence_score } = plan;
   const confidencePct = Math.round(confidence_score * 100);
 
   return (
     <div style={{ padding: "40px 48px", maxWidth: 1400 }}>
       <PageHeader
-        eyebrow="ROADMAP / PLAN_001"
+        eyebrow={`ROADMAP / ${target_company.toUpperCase()}`}
         title={`${target_company} · ${target_role}`}
         subtitle={`${total_weeks} weeks · ${total_estimated_hours} hrs · ${confidencePct}% confidence`}
         action={
@@ -56,10 +55,10 @@ export default function Briefing({ onBack }) {
         ))}
       </div>
 
-      {tab === "memo"    && <MemoTab />}
-      {tab === "roadmap" && <RoadmapTab />}
-      {tab === "gaps"    && <GapsTab />}
-      {tab === "market"  && <MarketTab />}
+      {tab === "memo"    && <MemoTab    plan={plan} />}
+      {tab === "roadmap" && <RoadmapTab plan={plan} />}
+      {tab === "gaps"    && <GapsTab    plan={plan} />}
+      {tab === "market"  && <MarketTab  plan={plan} />}
     </div>
   );
 }

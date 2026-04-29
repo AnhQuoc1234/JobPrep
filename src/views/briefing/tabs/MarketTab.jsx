@@ -1,47 +1,52 @@
 import { DollarSign, BarChart2, Wrench } from "lucide-react";
 import PanelHeader from "../../../components/PanelHeader";
-import { MOCK_ROADMAP } from "../../../data/mockData";
 
-const { market_snapshot } = MOCK_ROADMAP;
+export default function MarketTab({ plan }) {
+  const { market_snapshot } = plan;
 
-export default function MarketTab() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <SalaryPanel />
-        <SkillsPanel />
+        <SalaryPanel snapshot={market_snapshot} />
+        <SkillsPanel snapshot={market_snapshot} />
       </div>
-      <ToolsPanel />
+      <ToolsPanel snapshot={market_snapshot} />
     </div>
   );
 }
 
-function SalaryPanel() {
-  const [lo, hi] = market_snapshot.salary_range;
-  const fmt = (n) => `$${(n / 1000).toFixed(0)}K`;
+function SalaryPanel({ snapshot }) {
+  const [lo, hi] = snapshot.salary_range;
+  const fmt      = (n) => `$${(n / 1000).toFixed(0)}K`;
+  const mid      = Math.round((lo + hi) / 2);
+
+  const markers = [
+    { pct: 15, label: "P25",    val: fmt(lo)  },
+    { pct: 55, label: "MEDIAN", val: fmt(mid) },
+    { pct: 95, label: "P75",    val: fmt(hi)  },
+  ];
 
   return (
     <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
-      <PanelHeader icon={DollarSign} title="Salary range" tag={`${market_snapshot.postings_analyzed} POSTINGS`} />
+      <PanelHeader icon={DollarSign} title="Salary range" tag={`${snapshot.postings_analyzed} POSTINGS`} />
       <div style={{ padding: 28 }}>
         <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", letterSpacing: "0.1em", marginBottom: 8 }}>
-          {market_snapshot.role_title.toUpperCase()} · TOTAL COMP
+          {snapshot.role_title.toUpperCase()} · TOTAL COMP
         </div>
         <div style={{ fontFamily: "var(--font-serif)", fontSize: 36, fontWeight: 600, letterSpacing: "-0.02em", marginBottom: 4 }}>
           {fmt(lo)} – {fmt(hi)}
         </div>
         <div style={{ fontSize: 12, color: "var(--fg-muted)", marginBottom: 28 }}>
-          Based on {market_snapshot.postings_analyzed} postings analyzed
+          Based on {snapshot.postings_analyzed} postings analyzed
         </div>
 
-        {/* Range bar */}
         <div style={{ position: "relative", height: 8, background: "var(--bg-base)", borderRadius: 4, marginBottom: 12 }}>
           <div style={{
             position: "absolute", left: "15%", right: "5%", height: "100%",
             background: "linear-gradient(90deg, var(--accent-dim), var(--accent), var(--accent-dim))",
             borderRadius: 4,
           }} />
-          {[{ pct: 15, label: "P25", val: fmt(lo) }, { pct: 55, label: "MEDIAN", val: fmt(Math.round((lo + hi) / 2)) }, { pct: 95, label: "P75", val: fmt(hi) }].map((m) => (
+          {markers.map((m) => (
             <div key={m.pct} style={{ position: "absolute", left: `${m.pct}%`, transform: "translateX(-50%)", top: -3, bottom: -3, width: 2, background: "var(--fg-primary)" }}>
               <div style={{ position: "absolute", top: 16, left: "50%", transform: "translateX(-50%)", textAlign: "center", whiteSpace: "nowrap" }}>
                 <div style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: "var(--fg-muted)", letterSpacing: "0.1em" }}>{m.label}</div>
@@ -55,24 +60,17 @@ function SalaryPanel() {
   );
 }
 
-function SkillsPanel() {
-  const required = market_snapshot.top_required_skills;
-  const niceTo   = market_snapshot.top_nice_to_have_skills;
-
+function SkillsPanel({ snapshot }) {
   return (
     <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
       <PanelHeader icon={BarChart2} title="Skill signals" tag="BY FREQUENCY" />
       <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 6 }}>
-        <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", letterSpacing: "0.1em", marginBottom: 4 }}>
-          REQUIRED
-        </div>
-        {required.map((s) => (
+        <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", letterSpacing: "0.1em", marginBottom: 4 }}>REQUIRED</div>
+        {snapshot.top_required_skills.map((s) => (
           <SkillBar key={s.skill} skill={s} color="var(--accent)" />
         ))}
-        <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", letterSpacing: "0.1em", marginTop: 12, marginBottom: 4 }}>
-          NICE TO HAVE
-        </div>
-        {niceTo.map((s) => (
+        <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", letterSpacing: "0.1em", marginTop: 12, marginBottom: 4 }}>NICE TO HAVE</div>
+        {snapshot.top_nice_to_have_skills.map((s) => (
           <SkillBar key={s.skill} skill={s} color="var(--fg-muted)" />
         ))}
       </div>
@@ -93,18 +91,16 @@ function SkillBar({ skill, color }) {
   );
 }
 
-function ToolsPanel() {
+function ToolsPanel({ snapshot }) {
   return (
     <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
       <PanelHeader icon={Wrench} title="Common tools" tag="FROM JOB POSTINGS" />
       <div style={{ padding: 20, display: "flex", flexWrap: "wrap", gap: 8 }}>
-        {market_snapshot.common_tools.map((tool) => (
+        {snapshot.common_tools.map((tool) => (
           <span key={tool} style={{
             padding: "6px 12px",
-            background: "var(--bg-elevated)",
-            border: "1px solid var(--border-strong)",
-            borderRadius: 100,
-            fontSize: 12, fontWeight: 500,
+            background: "var(--bg-elevated)", border: "1px solid var(--border-strong)",
+            borderRadius: 100, fontSize: 12, fontWeight: 500,
           }}>
             {tool}
           </span>
