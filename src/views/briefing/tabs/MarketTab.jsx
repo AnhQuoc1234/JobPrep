@@ -1,4 +1,4 @@
-import { DollarSign, BarChart2, Wrench } from "lucide-react";
+import { TrendingUp, TrendingDown, Minus, BarChart2, Wrench, MapPin } from "lucide-react";
 import PanelHeader from "../../../components/PanelHeader";
 
 export default function MarketTab({ plan }) {
@@ -7,7 +7,7 @@ export default function MarketTab({ plan }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        <SalaryPanel snapshot={market_snapshot} />
+        <DemandPanel snapshot={market_snapshot} />
         <SkillsPanel snapshot={market_snapshot} />
       </div>
       <ToolsPanel snapshot={market_snapshot} />
@@ -15,46 +15,89 @@ export default function MarketTab({ plan }) {
   );
 }
 
-function SalaryPanel({ snapshot }) {
-  const [lo, hi] = snapshot.salary_range;
-  const fmt      = (n) => `$${(n / 1000).toFixed(0)}K`;
-  const mid      = Math.round((lo + hi) / 2);
+function DemandPanel({ snapshot }) {
+  const { demand_trend, demand_change_pct, postings_analyzed, top_locations, job_type_split } = snapshot;
 
-  const markers = [
-    { pct: 15, label: "P25",    val: fmt(lo)  },
-    { pct: 55, label: "MEDIAN", val: fmt(mid) },
-    { pct: 95, label: "P75",    val: fmt(hi)  },
+  const TrendIcon = demand_trend === "growing" ? TrendingUp : demand_trend === "declining" ? TrendingDown : Minus;
+  const trendColor =
+    demand_trend === "growing" ? "var(--accent)" :
+    demand_trend === "declining" ? "#e05a5a" : "var(--fg-muted)";
+
+  const typeSegments = [
+    { label: "Remote", key: "remote", color: "var(--accent)" },
+    { label: "Hybrid",  key: "hybrid",  color: "var(--fg-secondary)" },
+    { label: "On-site", key: "onsite",  color: "var(--fg-muted)" },
   ];
 
   return (
     <div style={{ background: "var(--bg-panel)", border: "1px solid var(--border-subtle)", borderRadius: 8, overflow: "hidden" }}>
-      <PanelHeader icon={DollarSign} title="Salary range" tag={`${snapshot.postings_analyzed} POSTINGS`} />
-      <div style={{ padding: 28 }}>
-        <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", letterSpacing: "0.1em", marginBottom: 8 }}>
-          {snapshot.role_title.toUpperCase()} · TOTAL COMP
-        </div>
-        <div style={{ fontFamily: "var(--font-serif)", fontSize: 36, fontWeight: 600, letterSpacing: "-0.02em", marginBottom: 4 }}>
-          {fmt(lo)} – {fmt(hi)}
-        </div>
-        <div style={{ fontSize: 12, color: "var(--fg-muted)", marginBottom: 28 }}>
-          Based on {snapshot.postings_analyzed} postings analyzed
+      <PanelHeader icon={MapPin} title="Job availability" tag={`${postings_analyzed} POSTINGS ANALYZED`} />
+      <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20 }}>
+
+        {/* Headline count + trend */}
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 12 }}>
+          <div>
+            <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", letterSpacing: "0.1em", marginBottom: 4 }}>
+              {snapshot.role_title.toUpperCase()} · OPEN ROLES
+            </div>
+            <div style={{ fontFamily: "var(--font-serif)", fontSize: 40, fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1 }}>
+              {postings_analyzed}
+            </div>
+          </div>
+          <div style={{
+            display: "flex", alignItems: "center", gap: 4, marginBottom: 6,
+            padding: "4px 10px", borderRadius: 100,
+            background: demand_trend === "growing" ? "var(--accent-dim)" : "var(--bg-elevated)",
+            border: `1px solid ${trendColor}`,
+            color: trendColor, fontSize: 12, fontWeight: 600,
+          }}>
+            <TrendIcon size={13} />
+            {demand_trend === "stable" ? "Stable" : `+${demand_change_pct}% YoY`}
+          </div>
         </div>
 
-        <div style={{ position: "relative", height: 8, background: "var(--bg-base)", borderRadius: 4, marginBottom: 12 }}>
-          <div style={{
-            position: "absolute", left: "15%", right: "5%", height: "100%",
-            background: "linear-gradient(90deg, var(--accent-dim), var(--accent), var(--accent-dim))",
-            borderRadius: 4,
-          }} />
-          {markers.map((m) => (
-            <div key={m.pct} style={{ position: "absolute", left: `${m.pct}%`, transform: "translateX(-50%)", top: -3, bottom: -3, width: 2, background: "var(--fg-primary)" }}>
-              <div style={{ position: "absolute", top: 16, left: "50%", transform: "translateX(-50%)", textAlign: "center", whiteSpace: "nowrap" }}>
-                <div style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: "var(--fg-muted)", letterSpacing: "0.1em" }}>{m.label}</div>
-                <div style={{ fontFamily: "var(--font-serif)", fontSize: 14, fontWeight: 600 }}>{m.val}</div>
+        {/* Job type split */}
+        <div>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", letterSpacing: "0.1em", marginBottom: 8 }}>
+            WORK FORMAT
+          </div>
+          <div style={{ height: 8, borderRadius: 4, overflow: "hidden", display: "flex", marginBottom: 10 }}>
+            {typeSegments.map((seg) => (
+              <div key={seg.key} style={{ flex: job_type_split[seg.key], background: seg.color }} />
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: 16 }}>
+            {typeSegments.map((seg) => (
+              <div key={seg.key} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: "var(--fg-secondary)" }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: seg.color, flexShrink: 0 }} />
+                {seg.label} <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: seg.color }}>
+                  {Math.round(job_type_split[seg.key] * 100)}%
+                </span>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
+
+        {/* Top locations */}
+        <div>
+          <div style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: "var(--fg-muted)", letterSpacing: "0.1em", marginBottom: 8 }}>
+            TOP LOCATIONS
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {top_locations.map((loc) => (
+              <div key={loc.city} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 12, color: "var(--fg-secondary)", width: 148, flexShrink: 0 }}>{loc.city}</span>
+                <div style={{ flex: 1, height: 4, background: "var(--bg-base)", borderRadius: 2 }}>
+                  <div style={{ height: "100%", width: `${Math.round(loc.pct * 100)}%`, background: "var(--accent)", borderRadius: 2 }} />
+                </div>
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--accent)", width: 34, textAlign: "right" }}>
+                  {Math.round(loc.pct * 100)}%
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );
