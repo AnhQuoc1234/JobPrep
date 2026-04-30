@@ -1,7 +1,7 @@
 # JobPrep
 An autonomous browser agent that researches company culture, interviewer backgrounds, and recent news to generate high-context, personalized interview briefings.
 
-# Interview Recon — UI
+# JobPrep — UI
 
 Modular React UI for an autonomous agent that researches companies, interviewers, and recent news to generate personalized interview briefings.
 
