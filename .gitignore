@@ -20,3 +20,23 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+.omc
+.env
+__init__.py
+.vite
+node_modules
+tests
+.claude
+.pytest_cache
+engine/roadmap/__pycache__/schemas.cpython-313.pyc
+engine/parsers/__pycache__/market_research.cpython-313.pyc
+engine/roadmap/__pycache__/generator.cpython-313.pyc
+engine/roadmap/__pycache__/gap_analysis.cpython-313.pyc
+.DS_Store
+dist/index.html
+dist/assets/index-BworYRgZ.css
+dist/assets/index-CChwoEg2.js
+
+dist/assets/index-Y-kmEmgt.js
+dist
+.DS_Store
